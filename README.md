@@ -7,9 +7,8 @@
 
 <blockquote class="well alert-block alert-danger">
 <big>
-As of 2017, DeepDive project is in maintenance mode and no longer under active development.
-The user community remains active, but the original project members can no longer promise exciting new features/improvements or responding to requests.
-For the more up-to-date research, please see the <a href="https://hazyresearch.github.io/snorkel/">Snorkel Project</a> or <a href="https://ds3lab.org/~czhang/">Ce Zhang's Projects</a>.
+I forked this from the original place just in case it got deleted.
+Since it stopped being developed since 2017, I will try to update the source. 
 </big>
 </blockquote>
 
