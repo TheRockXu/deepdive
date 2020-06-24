@@ -2,6 +2,9 @@
 
 # Usage: calibration.py [target/calibration_data_file.csv] [output_file.png]
 
+from __future__ import division
+from builtins import range
+from past.utils import old_div
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,7 +19,7 @@ prec = []
 counts_train = []
 for l in open(CALIBRATION_FILE):
         (a,b,c,d,e) = l.rstrip().split('\t')
-        labels.append((float(a) + float(b))/2)
+        labels.append(old_div((float(a) + float(b)),2))
         counts.append(int(c))
         if float(d) + float(e) == 0:
                 prec.append(0.0)

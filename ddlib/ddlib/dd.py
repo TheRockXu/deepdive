@@ -1,3 +1,5 @@
+from builtins import map
+from builtins import range
 import sys
 import collections
 
@@ -27,7 +29,7 @@ def unpack_words(input_dict, character_offset_begin=None, character_offset_end=N
                 if parent not in dep_tree: dep_tree[parent] = {"parent":-1, "label":"ROOT"}
 
         # workaround for making `map(None, a, b, ...)` work consistently with Python 2 and 3
-        zip_with_None = lambda *ls: (tuple(l[i] if i < len(l) else None for l in ls) for i in range(max(map(len, ls))))
+        zip_with_None = lambda *ls: (tuple(l[i] if i < len(l) else None for l in ls) for i in range(max(list(map(len, ls)))))
         ziped_tags = list(zip_with_None(array_character_offset_begin, array_character_offset_end, array_lemma,
                 array_pos, array_ner, array_words))
         wordobjs = []
@@ -54,13 +56,13 @@ def materialize_span(words, span, func=lambda x:x):
             span: A Span namedtuple
             func: Optional function that will be applied to each element in the result subsequence.
         """
-        return map(func, words[span.begin_word_id:(span.begin_word_id+span.length)])
+        return list(map(func, words[span.begin_word_id:(span.begin_word_id+span.length)]))
 
 def _fe_seq_between_words(words, begin_idx, end_idx, func=lambda x:x):
         if begin_idx < end_idx:
-                return Sequence(elements=map(func, words[begin_idx+1:end_idx]), is_inversed=False)
+                return Sequence(elements=list(map(func, words[begin_idx+1:end_idx])), is_inversed=False)
         else:
-                return Sequence(elements=map(func, words[end_idx+1:begin_idx]), is_inversed=True)
+                return Sequence(elements=list(map(func, words[end_idx+1:begin_idx])), is_inversed=True)
 
 
 def tokens_between_spans(words, span1, span2, func=lambda x:x):

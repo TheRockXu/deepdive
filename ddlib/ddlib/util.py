@@ -1,3 +1,7 @@
+from builtins import chr
+from builtins import str
+from builtins import zip
+from builtins import object
 from collections import namedtuple,OrderedDict
 import re
 import sys
@@ -22,7 +26,7 @@ escapeCodeToSpecial = {
   'n': '\n',
   'v': '\v',
 }
-specialToEscapeCode = {v: k for k, v in escapeCodeToSpecial.items()}
+specialToEscapeCode = {v: k for k, v in list(escapeCodeToSpecial.items())}
 
 def decode_pg_text_escapes(m):
   c = m.group(1)
@@ -99,7 +103,7 @@ def normalize_type_name(ty):
   if ty in CANONICAL_TYPE_BY_NAME:
     return CANONICAL_TYPE_BY_NAME[ty]
   else:
-    for patt,ty_canonical in CANONICAL_TYPE_BY_REGEX.items():
+    for patt,ty_canonical in list(CANONICAL_TYPE_BY_REGEX.items()):
       if patt.match(ty):
         return ty_canonical
   return ty
@@ -188,9 +192,9 @@ def parse_pgtsv_element(s, t, array_nesting_depth=0):
     return parser(s)
 
 
-class Row:
+class Row(object):
   def __str__(self):
-    return '<Row(' + ', '.join("%s=%s" % x for x in self.__dict__.items()) + ')>'
+    return '<Row(' + ', '.join("%s=%s" % x for x in list(self.__dict__.items())) + ')>'
 
   def __repr__(self):
     return str(self)
@@ -199,7 +203,7 @@ class Row:
     return self.__dict__
 
 
-class PGTSVParser:
+class PGTSVParser(object):
   """
   Initialized with a list of duples (field_name, field_type)
   Is a factory for simple Row class
@@ -282,7 +286,7 @@ def print_pgtsv_element(x, n, t, array_nesting_depth=0):
     return str(x)
 
 
-class PGTSVPrinter:
+class PGTSVPrinter(object):
   """
   Initialized with a list of type strings
   Prints out Postgres-format TSV output lines
@@ -411,7 +415,7 @@ def tsj_extractor(generator):
       columns = line.rstrip("\n").split("\t", num_input_splits)
       assert len(columns) == num_input_values
       values_in = (parse_json(i,v) for i,v in enumerate(columns))
-      input_dict = dict(zip(input_names, values_in))
+      input_dict = dict(list(zip(input_names, values_in)))
     except ValueError as exc:
       raise ValueError("could not parse TSJ line:\n  %s\ndue to %s" % (line, exc))
     for values_out in generator(**input_dict):

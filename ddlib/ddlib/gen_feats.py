@@ -10,6 +10,8 @@
 # Matteo, December 2014
 #
 
+from builtins import str
+from builtins import range
 from .dd import dep_path_between_words, materialize_span, Span, unpack_words
 
 MAX_KW_LENGTH = 3
@@ -68,7 +70,7 @@ def get_generic_features_mention(sentence, span, length_bin_size=5):
             continue
         is_in_dictionary = False
         for dict_id in dictionaries:
-            if " ".join(map(lambda x: str(x.lemma), sentence[i:j])) in \
+            if " ".join([str(x.lemma) for x in sentence[i:j]]) in \
                     dictionaries[dict_id]:
                 is_in_dictionary = True
                 yield "KW_IND_[" + dict_id + "]"
@@ -152,7 +154,7 @@ def get_generic_features_relation(sentence, span1, span2, length_bin_size=5):
             continue
         is_in_dictionary = False
         for dict_id in dictionaries:
-            if " ".join(map(lambda x: str(x.lemma), sentence[i:j])) in \
+            if " ".join([str(x.lemma) for x in sentence[i:j]]) in \
                     dictionaries[dict_id]:
                 is_in_dictionary = True
                 yield inverted + "KW_IND_[" + dict_id + "]"
@@ -219,8 +221,8 @@ def _get_substring_indices(_len, max_substring_len):
     """Yield the start-end indices for all substrings of a sequence with length
     _len, up to length max_substring_len"""
     for start in range(_len):
-        for end in reversed(range(start + 1, min(
-                            _len, start + 1 + max_substring_len))):
+        for end in reversed(list(range(start + 1, min(
+                            _len, start + 1 + max_substring_len)))):
             yield (start, end)
 
 
@@ -241,7 +243,7 @@ def _get_ngram_features(sentence, span, window=3):
         for j in range(1, window + 1):
             if i+j <= span.begin_word_id + span.length:
                 yield "NGRAM_" + str(j) + "_[" + " ".join(
-                    map(lambda x: str(x.lemma), sentence[i:i+j])) + "]"
+                    [str(x.lemma) for x in sentence[i:i+j]]) + "]"
 
 
 def _get_min_dep_path(sentence, span1, span2):
@@ -430,7 +432,7 @@ the dictionaries
     in_dictionaries = set()
     for i in range(window + 1):
         for j in range(span.length - i):
-            phrase = " ".join(map(lambda x: str(x.lemma), sentence[j:j+i+1]))
+            phrase = " ".join([str(x.lemma) for x in sentence[j:j+i+1]])
             for dict_id in dictionaries:
                 if phrase in dictionaries[dict_id]:
                     in_dictionaries.add(dict_id)

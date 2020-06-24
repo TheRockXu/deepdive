@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from builtins import range
 from deepdive import *
 
 # for python 3 compatibility
@@ -27,7 +28,7 @@ def extract(
     """
     num_tokens = len(ner_tags)
     # find all first indexes of series of tokens tagged as PERSON
-    first_indexes = (i for i in xrange(num_tokens) if ner_tags[i] == "PERSON" and (i == 0 or ner_tags[i-1] != "PERSON"))
+    first_indexes = (i for i in range(num_tokens) if ner_tags[i] == "PERSON" and (i == 0 or ner_tags[i-1] != "PERSON"))
     for begin_index in first_indexes:
         # find the end of the PERSON phrase (consecutive tokens tagged as PERSON)
         end_index = begin_index + 1
@@ -36,7 +37,7 @@ def extract(
         end_index -= 1
         # generate a mention identifier
         mention_id = "%s_%d_%d_%d" % (doc_id, sentence_index, begin_index, end_index)
-        mention_text = " ".join(map(lambda i: tokens[i], xrange(begin_index, end_index + 1)))
+        mention_text = " ".join([tokens[i] for i in range(begin_index, end_index + 1)])
         # Output a tuple for each PERSON phrase
         yield [
             mention_id,
